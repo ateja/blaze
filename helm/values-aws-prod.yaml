@@ -1,0 +1,22 @@
+environment: aws-prod
+
+image:
+  repository: ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/blaze-server
+  tag: latest
+  pullPolicy: Always
+
+replicaCount: 3
+
+service:
+  type: LoadBalancer
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+
+storage:
+  size: 10Gi
+  storageClass: gp2
+
+apiKey:
+  secretName: blaze-api-secret
+  secretKey: api-key
+  value: ${AWS_API_KEY}  # This should be set in CI/CD or manually 

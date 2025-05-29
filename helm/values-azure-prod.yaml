@@ -1,0 +1,23 @@
+environment: azure-prod
+
+image:
+  repository: blazeacr.azurecr.io/blaze-server
+  tag: latest
+  pullPolicy: Always
+
+replicaCount: 3
+
+service:
+  type: LoadBalancer
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+  port: 8080
+  targetPort: 8080
+
+storage:
+  size: 10Gi
+  storageClass: managed-premium
+
+apiKey:
+  secretName: blaze-api-secret
+  secretKey: api-key 

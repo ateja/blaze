@@ -1,0 +1,20 @@
+environment: minikube-dev
+
+image:
+  repository: blaze-server
+  tag: latest
+  pullPolicy: Never
+
+replicaCount: 1
+
+service:
+  type: NodePort
+
+storage:
+  size: 1Gi
+  storageClass: standard
+
+apiKey:
+  secretName: blaze-api-secret
+  secretKey: api-key
+  value: ""  # Will be set during installation 

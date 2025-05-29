@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "blaze.fullname" . }}-test-deployment"
+  labels:
+    {{- include "blaze.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: deployment-test
+      image: busybox
+      command: ['sh', '-c']
+      args:
+        - |
+          # Test if deployment exists
+          if ! kubectl get deployment {{ include "blaze.fullname" . }}; then
+            echo "Deployment does not exist"
+            exit 1
+          fi
+          
+          # Test if deployment has correct number of replicas
+          if [ "$(kubectl get deployment {{ include "blaze.fullname" . }} -o jsonpath='{.spec.replicas}')" != "{{ .Values.replicaCount }}" ]; then
+            echo "Deployment replicas do not match configuration"
+            exit 1
+          fi
+          
+          # Test if deployment has correct image
+          if [ "$(kubectl get deployment {{ include "blaze.fullname" . }} -o jsonpath='{.spec.template.spec.containers[0].image}')" != "{{ .Values.image.repository }}:{{ .Values.image.tag }}" ]; then
+            echo "Deployment image does not match configuration"
+            exit 1
+          fi
+          
+          # Test if deployment has correct environment variables
+          if ! kubectl get deployment {{ include "blaze.fullname" . }} -o jsonpath='{.spec.template.spec.containers[0].env}' | grep -q "API_KEY"; then
+            echo "Deployment missing API_KEY environment variable"
+            exit 1
+          fi
+          
+          echo "Deployment tests passed"
+  restartPolicy: Never 

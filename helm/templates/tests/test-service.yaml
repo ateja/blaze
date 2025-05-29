@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "blaze.fullname" . }}-test-service"
+  labels:
+    {{- include "blaze.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: service-test
+      image: busybox
+      command: ['sh', '-c']
+      args:
+        - |
+          # Test if service exists
+          if ! kubectl get service {{ include "blaze.fullname" . }}; then
+            echo "Service does not exist"
+            exit 1
+          fi
+          
+          # Test service type based on environment
+          {{- if eq .Values.environment "minikube-dev" }}
+          if [ "$(kubectl get service {{ include "blaze.fullname" . }} -o jsonpath='{.spec.type}')" != "NodePort" ]; then
+            echo "Service type should be 'NodePort' for Minikube"
+            exit 1
+          fi
+          {{- else if eq .Values.environment "azure-prod" }}
+          if [ "$(kubectl get service {{ include "blaze.fullname" . }} -o jsonpath='{.spec.type}')" != "LoadBalancer" ]; then
+            echo "Service type should be 'LoadBalancer' for Azure"
+            exit 1
+          fi
+          {{- end }}
+          
+          # Test if service port matches configuration
+          if [ "$(kubectl get service {{ include "blaze.fullname" . }} -o jsonpath='{.spec.ports[0].port}')" != "{{ .Values.service.port }}" ]; then
+            echo "Service port does not match configuration"
+            exit 1
+          fi
+          
+          echo "Service tests passed"
+  restartPolicy: Never 
