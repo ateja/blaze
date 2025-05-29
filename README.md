@@ -1,7 +1,14 @@
 # Blaze Server
 
-A file management server with API key authentication.
+The Blaze Server project serves as a foundational template for developing web applications. This template is  designed to streamline the development process by providing bare minimum essential components and configurations. I find it useful to use as a starting point for my apps. Key features of the Blaze Server include:
 
+- **Simple Server Architecture**: A minimalistic server setup that ensures ease of deployment and scalability.
+- **API Key Authentication**: Secure access management through API keys, which are generated and managed to ensure robust authentication mechanisms.
+- **Docker Integration**: A comprehensive Dockerfile is included to facilitate the seamless building and deployment of containerized applications.
+- **Kubernetes Configuration via Helm**: Predefined Kubernetes configurations using Helm charts to simplify the orchestration and management of containerized applications in a Kubernetes environment.
+- **Azure Infrastructure Setup with Terraform**: Infrastructure as Code (IaC) is implemented using Terraform to provision and manage Azure resources efficiently, ensuring a consistent and repeatable deployment process.
+
+  
 ## Prerequisites
 
 - Docker installed
