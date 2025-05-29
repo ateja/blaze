@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    server: https://192.168.49.2:8443  # Minikube default
+    certificate-authority: ~/.minikube/ca.crt
+  name: blaze-dev
+contexts:
+- context:
+    cluster: blaze-dev
+    namespace: default
+    user: blaze-dev
+  name: blaze-dev
+current-context: blaze-dev
+preferences: {}
+users:
+- name: blaze-dev
+  user:
+    client-certificate: ~/.minikube/profiles/minikube/client.crt
+    client-key: ~/.minikube/profiles/minikube/client.key 

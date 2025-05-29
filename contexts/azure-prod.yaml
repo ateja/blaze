@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Config
+clusters:
+- cluster:
+    server: https://your-aks-cluster.hcp.region.azmk8s.io:443
+    certificate-authority-data: ${AZURE_CLUSTER_CA_DATA}
+  name: blaze-azure-prod
+contexts:
+- context:
+    cluster: blaze-azure-prod
+    namespace: production
+    user: blaze-azure-prod
+  name: blaze-azure-prod
+current-context: blaze-azure-prod
+preferences: {}
+users:
+- name: blaze-azure-prod
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1beta1
+      command: kubelogin
+      args:
+        - get-token
+        - --server-id
+        - ${AZURE_SERVER_ID}
+        - --client-id
+        - ${AZURE_CLIENT_ID}
+        - --tenant-id
+        - ${AZURE_TENANT_ID} 
